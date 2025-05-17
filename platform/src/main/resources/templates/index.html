@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Skillbook | Learn Something New</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f3fdf6;
+            color: #2e5d3b;
+        }
+        header {
+            background-color: #b8e994;
+            padding: 1rem;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .menu a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #2e5d3b;
+            font-weight: bold;
+        }
+        .hero {
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+        .hero h1 {
+            color: #558b2f;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #3e4d3b;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo"><strong>Skillbook</strong></div>
+        <div class="menu">
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/register}">Register</a>
+            <a th:href="@{/courses}">Courses</a> <!-- /courses not built yet -->
+        </div>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Welcome to Skillbook!</h1>
+    <p>Register as a learner to access instructor-led courses across a variety of topics.</p>
+    <p>Join a growing community and start learning something new today.</p>
+</section>
+
+</body>
+</html>
