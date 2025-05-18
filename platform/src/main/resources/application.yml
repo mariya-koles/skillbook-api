@@ -1,3 +1,14 @@
+# Production configuration
+cors:
+  allowed-origins: https://your-production-domain.com  # Change this to your actual production domain
+
+# Database configuration
 spring:
-  profiles:
-    default: prod
+  datasource:
+    url: jdbc:postgresql://your-production-db-host:5432/skillbook
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false

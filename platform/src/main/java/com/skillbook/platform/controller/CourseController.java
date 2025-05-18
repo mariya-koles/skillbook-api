@@ -18,9 +18,9 @@ import java.util.List;
  * REST controller for managing courses.
  * Provides endpoints for course creation, retrieval, and management.
  *
- * @author Skillbook Team
+ * @author mariya-koles
  * @version 1.0
- * @since 2024-03
+ * @since 2025-03
  */
 @RestController
 @RequestMapping("/courses")

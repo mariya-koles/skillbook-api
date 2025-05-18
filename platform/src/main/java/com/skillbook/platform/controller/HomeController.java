@@ -7,9 +7,9 @@ import org.springframework.http.ResponseEntity;
  * Root controller for the Skillbook API.
  * Provides basic health check and API status information.
  *
- * @author Skillbook Team
+ * @author mariya-koles
  * @version 1.0
- * @since 2024-03
+ * @since 2025-03
  */
 @RestController
 public class HomeController {

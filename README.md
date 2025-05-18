@@ -1,5 +1,5 @@
 # skillbook
-A full-stack Java web app to share and book skill-based sessions.
+A full-stack Java web app to share and book skill-based sessions. This repository contains the backend API. The frontend is implemented in React and can be found in the skillbook-ui repository.
 
 ## Tech Stack
 
@@ -11,11 +11,6 @@ A full-stack Java web app to share and book skill-based sessions.
 - PostgreSQL database
 - Lombok for reducing boilerplate code
 - SpringDoc OpenAPI for API documentation
-
-### Frontend
-- Thymeleaf template engine
-- HTML/CSS
-- Bootstrap (planned)
 
 ### Development Tools
 - Maven for dependency management
@@ -29,7 +24,6 @@ A full-stack Java web app to share and book skill-based sessions.
 - Course management system
 - Session booking functionality
 - RESTful API endpoints
-- Interactive web interface
 - Swagger UI for API documentation
 
 ## Getting Started
