@@ -2,7 +2,6 @@ package com.skillbook.platform.controller;
 
 import com.skillbook.platform.dto.CourseDto;
 import com.skillbook.platform.model.Course;
-import com.skillbook.platform.model.User;
 import com.skillbook.platform.service.CourseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
