@@ -25,13 +25,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> {
-                    if ("dev".equals(activeProfile)) {
-                        auth.requestMatchers(
-                                "/swagger-ui/**",
-                                "/swagger-ui.html",
-                                "/v3/api-docs/**"
-                        ).permitAll();
-                    }
+                    // Swagger UI endpoints
+                    auth.requestMatchers(
+                            "/swagger-ui/**",
+                            "/swagger-ui.html",
+                            "/v3/api-docs/**"
+                    ).permitAll();
 
                     auth
                             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
