@@ -1,14 +1,13 @@
 package com.skillbook.platform.controller;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 
-
-@Controller
+@RestController
 public class HomeController {
 
     @GetMapping("/")
-    public String home() {
-        return "index"; // maps to templates/index.html
+    public ResponseEntity<String> home() {
+        return ResponseEntity.ok("Skillbook API is running");
     }
 }
