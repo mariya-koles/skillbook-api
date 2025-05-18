@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,15 +31,15 @@ public class SecurityConfigTest {
 
     @Test
     public void whenSecuredEndpoint_thenUnauthorized() throws Exception {
-        mockMvc.perform(get("/dashboard"))
+        mockMvc.perform(get("/courses"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithMockUser(username = "testuser", roles = {"LEARNER"})
-    public void whenAuthenticatedUser_thenAllowAccess() throws Exception {
-        mockMvc.perform(get("/dashboard"))
-                .andExpect(status().isOk());
+    public void whenAuthenticatedLearner_thenForbidden() throws Exception {
+        mockMvc.perform(get("/courses"))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -52,8 +51,7 @@ public class SecurityConfigTest {
 
     @Test
     public void whenSwaggerEndpoint_thenAllowAccess() throws Exception {
-        mockMvc.perform(get("/swagger-ui.html"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/swagger-ui/index.html"));
+        mockMvc.perform(get("/swagger-ui/index.html"))
+                .andExpect(status().isOk());
     }
 } 
