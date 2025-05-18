@@ -38,7 +38,19 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
 
+    @Schema(example = "john")
+    @Column(name = "firstname")
+    private String firstName;
+
+    @Schema(example = "doe")
+    @Column(name = "lastname")
+    private String lastName;
+
     @Enumerated(EnumType.STRING)
     private Role role; // e.g. LEARNER, INSTRUCTOR, ADMIN
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "profilepic", columnDefinition = "bytea")
+    private byte[] profilepic;
 
 }

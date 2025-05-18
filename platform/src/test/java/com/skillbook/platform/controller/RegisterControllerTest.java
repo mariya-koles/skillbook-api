@@ -36,6 +36,8 @@ public class RegisterControllerTest {
                 .username("newuser")
                 .email("new@example.com")
                 .password("password123")
+                .firstName("John")
+                .lastName("Doe")
                 .role(Role.LEARNER)
                 .build();
 
@@ -58,6 +60,8 @@ public class RegisterControllerTest {
                 .username("existing")
                 .email("existing@example.com")
                 .password("password123")
+                .firstName("Jane")
+                .lastName("Smith")
                 .role(Role.LEARNER)
                 .build();
 
@@ -69,5 +73,25 @@ public class RegisterControllerTest {
         // then
         assertThat(response.getStatusCode().value()).isEqualTo(400);
         assertThat(response.getBody()).isEqualTo("Username already exists.");
+    }
+
+    @Test
+    public void whenEmptyUsername_thenReturnsBadRequest() {
+        // given
+        User user = User.builder()
+                .username("")
+                .email("test@example.com")
+                .password("password123")
+                .firstName("Test")
+                .lastName("User")
+                .role(Role.LEARNER)
+                .build();
+
+        // when
+        ResponseEntity<?> response = registerController.processRegistration(user);
+
+        // then
+        assertThat(response.getStatusCode().value()).isEqualTo(400);
+        assertThat(response.getBody()).isEqualTo("Username cannot be empty");
     }
 } 

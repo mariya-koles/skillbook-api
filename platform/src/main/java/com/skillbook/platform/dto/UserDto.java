@@ -22,4 +22,13 @@ public class UserDto {
 
     @Schema(example = "INSTRUCTOR", description = "Role assigned to the user (e.g., ADMIN, INSTRUCTOR, LEARNER)")
     private Role role;
+
+    @Schema(example = "John", description = "First name of the user")
+    private String firstName;
+
+    @Schema(example = "Doe", description = "Last name of the user")
+    private String lastName;
+
+    @Schema(description = "Profile picture binary data as byte array")
+    private byte[] profilepic;
 }

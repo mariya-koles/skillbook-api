@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -20,64 +22,72 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles("test")
 public class RegistrationFlowTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Test
-    public void testSuccessfulRegistrationFlow() throws Exception {
-        // Create a test user
+    public void testSuccessfulRegistration() throws Exception {
         User user = User.builder()
-                .username("integrationtest")
-                .email("integration@test.com")
-                .password("testpass123")
+                .username("testuser")
+                .email("test@example.com")
+                .password("password123")
+                .firstName("Test")
+                .lastName("User")
                 .role(Role.LEARNER)
                 .build();
 
-        // Register the user
         mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user)))
                 .andExpect(status().isOk())
                 .andExpect(content().string("User registered successfully"));
 
-        // Verify user exists in database
-        User savedUser = userRepository.findByUsername("integrationtest").orElse(null);
-        assertThat(savedUser).isNotNull();
-        assertThat(savedUser.getEmail()).isEqualTo("integration@test.com");
+        // Verify user was saved with correct data
+        User savedUser = userRepository.findByUsername("testuser")
+                .orElseThrow(() -> new AssertionError("User not found"));
+        assertThat(savedUser.getEmail()).isEqualTo("test@example.com");
+        assertThat(savedUser.getFirstName()).isEqualTo("Test");
+        assertThat(savedUser.getLastName()).isEqualTo("User");
         assertThat(savedUser.getRole()).isEqualTo(Role.LEARNER);
-
-        // Try to register same user again
-        mockMvc.perform(post("/register")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Username already exists."));
     }
 
     @Test
-    public void testRegistrationValidation() throws Exception {
-        // Test with missing required fields
-        User invalidUser = User.builder()
-                .username("") // empty username
-                .email("invalid@test.com")
-                .password("pass123")
+    public void testDuplicateUsername() throws Exception {
+        // Create initial user
+        User existingUser = User.builder()
+                .username("existing")
+                .email("existing@example.com")
+                .password("password123")
+                .firstName("Existing")
+                .lastName("User")
+                .role(Role.LEARNER)
+                .build();
+        userRepository.save(existingUser);
+
+        // Try to register with same username
+        User duplicateUser = User.builder()
+                .username("existing")
+                .email("another@example.com")
+                .password("different123")
+                .firstName("Another")
+                .lastName("User")
                 .role(Role.LEARNER)
                 .build();
 
         mockMvc.perform(post("/register")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(invalidUser)))
-                .andExpect(status().isBadRequest());
-
-        // Verify user was not saved
-        assertThat(userRepository.findByUsername("")).isEmpty();
+                .content(objectMapper.writeValueAsString(duplicateUser)))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Username already exists."));
     }
 } 
