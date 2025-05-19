@@ -4,6 +4,8 @@ cors:
 
 # Database configuration
 spring:
+  config:
+    import: optional:classpath:/secrets.properties
   datasource:
     url: jdbc:postgresql://your-production-db-host:5432/skillbook
     username: ${DB_USERNAME}

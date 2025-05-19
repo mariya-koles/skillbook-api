@@ -32,5 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-# ignore secret test config
+# ignore secrets
 /src/test/resources/secrets.properties
+/src/main/resources/secrets.properties

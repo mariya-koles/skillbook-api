@@ -1,6 +1,8 @@
 spring:
   profiles:
     active: dev
+  config:
+    import: optional:classpath:/secrets.properties
   datasource:
     url: jdbc:postgresql://localhost:5432/skillbook
     username: postgres
