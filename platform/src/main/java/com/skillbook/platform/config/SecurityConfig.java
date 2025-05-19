@@ -66,9 +66,9 @@ public class SecurityConfig {
                                 "/swagger-ui.html",
                                 "/api/auth/login",
                                 "/register",
-                                "/actuator/health"
+                                "/actuator/health",
+                                "/courses/**"
                         ).permitAll()
-                        .requestMatchers("/courses/**").hasAuthority("ROLE_INSTRUCTOR")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

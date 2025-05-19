@@ -86,7 +86,6 @@ public class CourseControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "INSTRUCTOR")
     public void whenGetAllCourses_thenReturnJsonArray() throws Exception {
         List<Course> allCourses = Arrays.asList(testCourse1, testCourse2);
         given(courseRepository.findAll()).willReturn(allCourses);
@@ -99,7 +98,6 @@ public class CourseControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "INSTRUCTOR")
     public void whenGetCoursesByCategory_thenReturnFilteredJsonArray() throws Exception {
         List<Course> programmingCourses = Arrays.asList(testCourse1, testCourse2);
         given(courseRepository.findByCategory("Programming")).willReturn(programmingCourses);
@@ -112,7 +110,6 @@ public class CourseControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "INSTRUCTOR")
     public void whenGetCourseById_thenReturnCourse() throws Exception {
         given(courseService.getCourseById(1L)).willReturn(testCourse1);
 
@@ -124,7 +121,7 @@ public class CourseControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "INSTRUCTOR")
+    @WithMockUser(roles = {"INSTRUCTOR", "ADMIN"})
     public void whenCreateCourse_thenReturnSuccess() throws Exception {
         CourseDto courseDto = new CourseDto();
         courseDto.setTitle("New Course");
@@ -140,6 +137,22 @@ public class CourseControllerTest {
                 .andExpect(content().string("Course created successfully."));
 
         verify(courseService).createCourse(any(CourseDto.class));
+    }
+
+    @Test
+    @WithMockUser(roles = {"LEARNER"})
+    public void whenCreateCourse_thenReturnUnauthorized() throws Exception {
+        CourseDto courseDto = new CourseDto();
+        courseDto.setTitle("New Course");
+        courseDto.setDescription("Test Description");
+        courseDto.setCategory("Test Category");
+        courseDto.setStartTime(LocalDateTime.now().plusDays(1));
+        courseDto.setDurationMinutes(60);
+
+        mockMvc.perform(post("/courses/courses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(courseDto)))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -179,7 +192,7 @@ public class CourseControllerTest {
     @Test
     public void whenUnauthorizedUser_thenReturn401() throws Exception {
         mockMvc.perform(get("/courses"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isOk());
     }
 
     @Test

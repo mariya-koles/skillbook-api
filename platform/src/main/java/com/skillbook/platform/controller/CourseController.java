@@ -42,8 +42,8 @@ public class CourseController {
      * @HTTP 200 OK with the list of courses
      */
     @GetMapping
-    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<Course>> getAllCourses() {
+        log.info("Fetching courses...");
         return ResponseEntity.ok(courseRepository.findAll());
     }
 
@@ -55,7 +55,6 @@ public class CourseController {
      * @HTTP 200 OK with the filtered list of courses
      */
     @GetMapping("/category/{category}")
-    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<List<Course>> getCoursesByCategory(@PathVariable String category) {
         return ResponseEntity.ok(courseRepository.findByCategory(category));
     }
@@ -68,7 +67,6 @@ public class CourseController {
      * @throws com.skillbook.platform.exception.ResourceNotFoundException if course not found
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('INSTRUCTOR')")
     public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
         try {
             Course course = courseService.getCourseById(id);
@@ -86,7 +84,7 @@ public class CourseController {
      * @HTTP 200 OK if course creation is successful
      */
     @PostMapping("/courses")
-    @PreAuthorize("hasRole('INSTRUCTOR')")
+    @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
     public ResponseEntity<?> createCourse(@Valid @RequestBody CourseDto dto) {
         if (dto.getTitle() == null || dto.getTitle().trim().isEmpty() ||
             dto.getDescription() == null || dto.getDescription().trim().isEmpty() ||
