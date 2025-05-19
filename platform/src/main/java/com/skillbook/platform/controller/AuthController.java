@@ -1,7 +1,8 @@
 package com.skillbook.platform.controller;
 
-import com.skillbook.platform.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import com.skillbook.platform.security.CustomUserDetailsService;
+import com.skillbook.platform.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,39 +12,52 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Value;
-import jakarta.annotation.PostConstruct;
-
-import java.util.Map;
-
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
-public class ApiController {
+@RequestMapping("/api/auth")
+public class AuthController {
 
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
-
-    @PostConstruct
-    public void logDbUrl() {
-        System.out.println("Connected to DB: " + dbUrl);
+    public AuthController(AuthenticationManager authManager, JwtUtil jwtUtil) {
+        this.authenticationManager = authManager;
+        this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/api/login")
-        public ResponseEntity<String> login(@RequestBody User user) {
-            try {
-                Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword()
-                    )
-                );
-                return ResponseEntity.ok("Login successful");
-            } catch (AuthenticationException e) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        if (request.username == null || request.password == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username and password are required");
+        }
+
+        try {
+            Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    request.username,
+                    request.password
+                )
+            );
+            
+            if (auth.isAuthenticated()) {
+                final String jwt = jwtUtil.generateToken(request.username);
+                return ResponseEntity.ok(new AuthResponse(jwt));
+            } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
             }
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
+    }
+
+    static class AuthRequest {
+        public String username;
+        public String password;
+    }
+
+    static class AuthResponse {
+        public String token;
+        public AuthResponse(String token) { this.token = token; }
+    }
 }
