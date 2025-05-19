@@ -1,7 +1,7 @@
 package com.skillbook.platform.controller;
 
 
-import com.skillbook.platform.security.CustomUserDetailsService;
+
 import com.skillbook.platform.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -20,6 +22,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
+    private static final Logger log = LoggerFactory.getLogger(CourseController.class);
 
     public AuthController(AuthenticationManager authManager, JwtUtil jwtUtil) {
         this.authenticationManager = authManager;

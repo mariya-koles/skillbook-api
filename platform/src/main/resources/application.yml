@@ -13,6 +13,10 @@ spring:
       ddl-auto: update
     show-sql: false
 
+jwt:
+  secret: ${JWT_KEY}
+  expirationMs: 1800000
+
 management:
   endpoints:
     web:

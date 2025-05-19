@@ -14,9 +14,12 @@ spring:
 cors:
   allowed-origins: http://localhost:3000
 
+jwt:
+  secret: ${JWT_KEY}
+  expirationMs: 1800000
+
 # Logging configuration for development
 logging:
   level:
     root: INFO
-    com.skillbook: DEBUG
     org.springframework.security: DEBUG
