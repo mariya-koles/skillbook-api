@@ -1,11 +1,11 @@
 package com.skillbook.platform.controller;
 
 import com.skillbook.platform.dto.CourseDto;
-import com.skillbook.platform.model.Course;
+import com.skillbook.platform.dto.UserDto;
 import com.skillbook.platform.service.CourseService;
-import com.skillbook.platform.repository.CourseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.skillbook.platform.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +26,14 @@ import java.util.List;
 @RequestMapping("/courses")
 public class CourseController {
 
+
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
     private final CourseService courseService;
-    @Autowired
-    private CourseRepository courseRepository;
+    private final UserService userService;
 
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, UserService userService) {
         this.courseService = courseService;
+        this.userService = userService;
     }
 
     /**
@@ -42,9 +43,9 @@ public class CourseController {
      * @HTTP 200 OK with the list of courses
      */
     @GetMapping
-    public ResponseEntity<List<Course>> getAllCourses() {
+    public ResponseEntity<List<CourseDto>> getAllCourses() {
         log.info("Fetching courses...");
-        return ResponseEntity.ok(courseRepository.findAll());
+        return ResponseEntity.ok(courseService.getAllCourses());
     }
 
     /**
@@ -55,8 +56,9 @@ public class CourseController {
      * @HTTP 200 OK with the filtered list of courses
      */
     @GetMapping("/category/{category}")
-    public ResponseEntity<List<Course>> getCoursesByCategory(@PathVariable String category) {
-        return ResponseEntity.ok(courseRepository.findByCategory(category));
+    public ResponseEntity<List<CourseDto>> getCoursesByCategory(@PathVariable String category) {
+        return ResponseEntity.ok(courseService.getCoursesByCategory(category));
+
     }
 
     /**
@@ -64,12 +66,11 @@ public class CourseController {
      *
      * @param id the ID of the course to retrieve
      * @return the requested Course object
-     * @throws com.skillbook.platform.exception.ResourceNotFoundException if course not found
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Course> getCourseById(@PathVariable Long id) {
+    public ResponseEntity<CourseDto> getCourseById(@PathVariable Long id) {
         try {
-            Course course = courseService.getCourseById(id);
+            CourseDto course = courseService.getCourseById(id);
             return ResponseEntity.ok(course);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
@@ -101,4 +102,30 @@ public class CourseController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    /**
+     * Enrolls the currently authenticated user in the specified course.
+     *
+     * @param courseId       the ID of the course to enroll in
+     * @param authentication the Spring Security authentication object containing the current user's identity
+     * @return ResponseEntity indicating success or failure of the enrollment
+     */
+    @PostMapping("/{courseId}/enroll")
+    @PreAuthorize("hasRole('LEARNER')")
+    public ResponseEntity<?> enrollInCourse(@PathVariable Long courseId, Authentication authentication) {
+        String username = authentication.getName();  // gets the authenticated username
+
+        UserDto user = userService.findByUsername(username);
+        CourseDto course = courseService.getCourseById(courseId);
+
+        user.getEnrolledCourses().add(course);
+        userService.updateUser(user);  // persist the enrollment
+
+        return ResponseEntity.ok("Enrolled successfully in course ID " + courseId);
+    }
+
+
+
+
+
 }

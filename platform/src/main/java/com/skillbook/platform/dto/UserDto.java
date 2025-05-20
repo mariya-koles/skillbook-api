@@ -4,12 +4,17 @@ import com.skillbook.platform.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import java.util.List;
+
 @Schema(description = "Data Transfer Object for User")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class UserDto {
+
+    @Schema(example = "1", description = "User's unique ID", accessMode = Schema.AccessMode.READ_ONLY)
+    private Long id;
 
     @Schema(example = "john_doe", description = "Unique username for login")
     private String username;
@@ -31,4 +36,7 @@ public class UserDto {
 
     @Schema(description = "Profile picture binary data as byte array")
     private byte[] profilepic;
+
+    private List<CourseDto> enrolledCourses;
+
 }

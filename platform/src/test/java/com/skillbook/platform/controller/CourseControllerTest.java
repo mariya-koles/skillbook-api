@@ -2,30 +2,32 @@ package com.skillbook.platform.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skillbook.platform.dto.CourseDto;
-import com.skillbook.platform.model.Course;
-import com.skillbook.platform.model.User;
+import com.skillbook.platform.dto.UserDto;
 import com.skillbook.platform.service.CourseService;
-import com.skillbook.platform.repository.CourseRepository;
 import com.skillbook.platform.enums.Role;
-import com.skillbook.platform.config.SecurityConfig;
+import com.skillbook.platform.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@EnableMethodSecurity
 @ActiveProfiles("test")
 public class CourseControllerTest {
 
@@ -45,18 +48,17 @@ public class CourseControllerTest {
     private CourseService courseService;
 
     @MockBean
-    private CourseRepository courseRepository;
+    private UserService userService;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private Course testCourse1;
-    private Course testCourse2;
-    private User instructor;
+    private CourseDto testCourse1;
+    private CourseDto testCourse2;
 
     @BeforeEach
     void setUp() {
-        instructor = User.builder()
+        UserDto instructor = UserDto.builder()
                 .id(1L)
                 .username("instructor1")
                 .email("instructor@test.com")
@@ -64,22 +66,22 @@ public class CourseControllerTest {
                 .role(Role.INSTRUCTOR)
                 .build();
 
-        testCourse1 = Course.builder()
+        testCourse1 = CourseDto.builder()
                 .id(1L)
                 .title("Java Basics")
                 .description("Introduction to Java")
                 .category("Programming")
-                .instructor(instructor)
+                .instructorId(instructor.getId())
                 .startTime(LocalDateTime.now().plusDays(1))
                 .durationMinutes(90)
                 .build();
 
-        testCourse2 = Course.builder()
+        testCourse2 = CourseDto.builder()
                 .id(2L)
                 .title("Advanced Java")
                 .description("Advanced Java Topics")
                 .category("Programming")
-                .instructor(instructor)
+                .instructorId(instructor.getId())
                 .startTime(LocalDateTime.now().plusDays(2))
                 .durationMinutes(120)
                 .build();
@@ -87,8 +89,9 @@ public class CourseControllerTest {
 
     @Test
     public void whenGetAllCourses_thenReturnJsonArray() throws Exception {
-        List<Course> allCourses = Arrays.asList(testCourse1, testCourse2);
-        given(courseRepository.findAll()).willReturn(allCourses);
+        List<CourseDto> allCourses = Arrays.asList(testCourse1, testCourse2);
+        given(courseService.getAllCourses()).willReturn(allCourses);
+
 
         mockMvc.perform(get("/courses"))
                 .andExpect(status().isOk())
@@ -99,8 +102,8 @@ public class CourseControllerTest {
 
     @Test
     public void whenGetCoursesByCategory_thenReturnFilteredJsonArray() throws Exception {
-        List<Course> programmingCourses = Arrays.asList(testCourse1, testCourse2);
-        given(courseRepository.findByCategory("Programming")).willReturn(programmingCourses);
+        List<CourseDto> programmingCourses = Arrays.asList(testCourse1, testCourse2);
+        given(courseService.getCoursesByCategory("Programming")).willReturn(programmingCourses);
 
         mockMvc.perform(get("/courses/category/Programming"))
                 .andExpect(status().isOk())
@@ -168,7 +171,7 @@ public class CourseControllerTest {
     @Test
     @WithMockUser(roles = "INSTRUCTOR")
     public void whenGetCoursesByNonExistentCategory_thenReturnEmptyArray() throws Exception {
-        given(courseRepository.findByCategory("NonExistent")).willReturn(List.of());
+        given(courseService.getCoursesByCategory("NonExistent")).willReturn(List.of());
 
         mockMvc.perform(get("/courses/category/NonExistent"))
                 .andExpect(status().isOk())
@@ -208,6 +211,56 @@ public class CourseControllerTest {
         mockMvc.perform(post("/courses/courses")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(courseDto)))
+                .andExpect(status().isForbidden());
+    }
+
+    @WithMockUser(username = "learner1", roles = "LEARNER")
+    @Test
+    public void whenLearnerEnrollsInCourse_thenReturn200() throws Exception {
+        UserDto mockUser = new UserDto();
+        mockUser.setId(1L);
+        mockUser.setUsername("learner1");
+        mockUser.setEnrolledCourses(new ArrayList<>());
+
+        CourseDto mockCourse = new CourseDto();
+        mockCourse.setId(4L);
+        mockCourse.setTitle("Math 101");
+
+        when(userService.findByUsername("learner1")).thenReturn(mockUser);
+        when(courseService.getCourseById(4L)).thenReturn(mockCourse);
+
+        doNothing().when(userService).updateUser(any(UserDto.class));
+
+        mockMvc.perform(post("/courses/4/enroll"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("Enrolled successfully")));
+
+        verify(userService, times(1)).updateUser(any(UserDto.class));
+    }
+
+
+
+    @WithMockUser(username = "learner1", roles = "LEARNER")
+    @Test
+    public void whenCourseNotFound_thenReturn404() throws Exception {
+        when(courseService.getCourseById(999L))
+                .thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+
+        mockMvc.perform(post("/courses/999/enroll"))
+                .andExpect(status().isNotFound());
+    }
+
+    @WithMockUser(username = "instructor1", roles = "INSTRUCTOR")
+    @Test
+    public void whenUserNotLearner_thenReturn403() throws Exception {
+        CourseDto mockCourse = new CourseDto();
+        mockCourse.setId(4L);
+        mockCourse.setTitle("Math 101");
+
+
+        when(courseService.getCourseById(4L)).thenReturn(mockCourse);
+
+        mockMvc.perform(post("/courses/4/enroll"))
                 .andExpect(status().isForbidden());
     }
 } 

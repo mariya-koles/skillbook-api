@@ -5,15 +5,22 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
+@Schema(description = "Data Transfer Object for Courses")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class CourseDto {
+
+    @Schema(example = "1", description = "Course unique ID", accessMode = Schema.AccessMode.READ_ONLY)
+    private Long id;
 
     @NotBlank(message = "Title is required")
     @Schema(example = "Intro to React")
@@ -38,4 +45,7 @@ public class CourseDto {
     @Min(value = 1, message = "Duration must be at least 1 minute")
     @Schema(example = "90")
     private Integer durationMinutes;
+
+    private Set<Long> enrolledUserIds; // or List<UserDto>
+
 }

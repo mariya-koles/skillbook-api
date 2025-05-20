@@ -6,7 +6,9 @@ import com.skillbook.platform.model.User;
 import com.skillbook.platform.repository.CourseRepository;
 import com.skillbook.platform.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -18,12 +20,33 @@ public class CourseService {
     private final UserRepository userRepository;
 
 
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+    public List<CourseDto> getAllCourses() {
+        List<Course> courses = courseRepository.findAll();
+
+        return courses.stream()
+                .map(course -> CourseDto.builder()
+                        .title(course.getTitle())
+                        .description(course.getDescription())
+                        .category(course.getCategory())
+                        .durationMinutes(course.getDurationMinutes())
+                        .startTime(course.getStartTime())
+                        .instructorId(course.getInstructor().getId())
+                        .build())
+                .toList();
     }
 
-    public Course getCourseById(Long id) {
-        return courseRepository.findById(id).orElse(null);
+    public CourseDto getCourseById(Long id) {
+        Course course = courseRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+
+        return CourseDto.builder()
+                .title(course.getTitle())
+                .description(course.getDescription())
+                .category(course.getCategory())
+                .durationMinutes(course.getDurationMinutes())
+                .startTime(course.getStartTime())
+                .instructorId(course.getInstructor().getId())
+                .build();
     }
 
     public void createCourse(CourseDto dto) {
@@ -41,4 +64,37 @@ public class CourseService {
 
         courseRepository.save(course);
     }
+
+    public List<CourseDto> getCoursesByCategory(String category) {
+        List<Course> courses = courseRepository.findByCategory(category);
+        if (courses.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No courses found in that category");
+        }
+        return courses.stream()
+                .map(course -> CourseDto.builder()
+                        .title(course.getTitle())
+                        .description(course.getDescription())
+                        .category(course.getCategory())
+                        .durationMinutes(course.getDurationMinutes())
+                        .startTime(course.getStartTime())
+                        .instructorId(course.getInstructor().getId())
+                        .build())
+                .toList();
+    }
+
+    public void updateCourse(Long courseId, CourseDto dto) {
+        Course existingCourse = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+
+        existingCourse.setTitle(dto.getTitle());
+        existingCourse.setDescription(dto.getDescription());
+        existingCourse.setCategory(dto.getCategory());
+        existingCourse.setDurationMinutes(dto.getDurationMinutes());
+        existingCourse.setStartTime(dto.getStartTime());
+
+        courseRepository.save(existingCourse);
+    }
+
+
+
 }
