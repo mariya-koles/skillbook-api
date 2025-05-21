@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
 import jakarta.validation.Valid;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -118,6 +119,10 @@ public class CourseController {
         UserDto user = userService.findByUsername(username);
         CourseDto course = courseService.getCourseById(courseId);
 
+
+    if (user.getEnrolledCourses() == null) {
+        user.setEnrolledCourses(new ArrayList<>());
+    }
         user.getEnrolledCourses().add(course);
         userService.updateUser(user);  // persist the enrollment
 

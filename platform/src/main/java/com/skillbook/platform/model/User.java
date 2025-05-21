@@ -20,7 +20,6 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Table(name = "users", schema="public")  // "user" is a reserved keyword in PostgreSQL
 @Schema(description = "User model used for login and registration")
 public class User {

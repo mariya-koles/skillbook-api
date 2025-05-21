@@ -1,5 +1,6 @@
 package com.skillbook.platform.service;
 
+import com.skillbook.platform.controller.CourseController;
 import com.skillbook.platform.dto.CourseDto;
 import com.skillbook.platform.model.Course;
 import com.skillbook.platform.model.User;
@@ -9,7 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 @Service
@@ -18,13 +20,14 @@ public class CourseService {
 
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
-
+    private static final Logger log = LoggerFactory.getLogger(CourseController.class);
 
     public List<CourseDto> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
 
         return courses.stream()
                 .map(course -> CourseDto.builder()
+                        .id(course.getId())
                         .title(course.getTitle())
                         .description(course.getDescription())
                         .category(course.getCategory())
@@ -40,6 +43,7 @@ public class CourseService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
 
         return CourseDto.builder()
+                .id(course.getId())
                 .title(course.getTitle())
                 .description(course.getDescription())
                 .category(course.getCategory())
@@ -72,6 +76,7 @@ public class CourseService {
         }
         return courses.stream()
                 .map(course -> CourseDto.builder()
+                        .id(course.getId())
                         .title(course.getTitle())
                         .description(course.getDescription())
                         .category(course.getCategory())
