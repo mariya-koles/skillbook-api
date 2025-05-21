@@ -35,3 +35,6 @@ build/
 # ignore secrets
 /src/test/resources/secrets.properties
 /src/main/resources/secrets.properties
+
+#ignore logs
+/logs
