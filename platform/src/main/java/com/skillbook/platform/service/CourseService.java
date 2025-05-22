@@ -2,6 +2,7 @@ package com.skillbook.platform.service;
 
 import com.skillbook.platform.controller.CourseController;
 import com.skillbook.platform.dto.CourseDto;
+import com.skillbook.platform.dto.InstructorDto;
 import com.skillbook.platform.model.Course;
 import com.skillbook.platform.model.User;
 import com.skillbook.platform.repository.CourseRepository;
@@ -34,6 +35,16 @@ public class CourseService {
                         .durationMinutes(course.getDurationMinutes())
                         .startTime(course.getStartTime())
                         .instructorId(course.getInstructor().getId())
+                        .instructor(
+                            course.getInstructor() != null
+                                ? InstructorDto.builder()
+                                    .id(course.getInstructor().getId())
+                                    .username(course.getInstructor().getUsername())
+                                    .firstName(course.getInstructor().getFirstName())
+                                    .lastName(course.getInstructor().getLastName())
+                                    .build()
+                                : null
+                        )
                         .build())
                 .toList();
     }
@@ -50,6 +61,16 @@ public class CourseService {
                 .durationMinutes(course.getDurationMinutes())
                 .startTime(course.getStartTime())
                 .instructorId(course.getInstructor().getId())
+                .instructor(
+                    course.getInstructor() != null
+                        ? InstructorDto.builder()
+                            .id(course.getInstructor().getId())
+                            .username(course.getInstructor().getUsername())
+                            .firstName(course.getInstructor().getFirstName())
+                            .lastName(course.getInstructor().getLastName())
+                            .build()
+                        : null
+                )
                 .build();
     }
 
@@ -83,6 +104,16 @@ public class CourseService {
                         .durationMinutes(course.getDurationMinutes())
                         .startTime(course.getStartTime())
                         .instructorId(course.getInstructor().getId())
+                        .instructor(
+                            course.getInstructor() != null
+                                ? InstructorDto.builder()
+                                    .id(course.getInstructor().getId())
+                                    .username(course.getInstructor().getUsername())
+                                    .firstName(course.getInstructor().getFirstName())
+                                    .lastName(course.getInstructor().getLastName())
+                                    .build()
+                                : null
+                        )
                         .build())
                 .toList();
     }

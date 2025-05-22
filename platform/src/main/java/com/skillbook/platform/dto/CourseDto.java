@@ -48,4 +48,6 @@ public class CourseDto {
 
     private Set<Long> enrolledUserIds; // or List<UserDto>
 
+    private InstructorDto instructor;
+
 }

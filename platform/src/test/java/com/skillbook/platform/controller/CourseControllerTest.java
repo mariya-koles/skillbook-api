@@ -3,6 +3,7 @@ package com.skillbook.platform.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skillbook.platform.dto.CourseDto;
 import com.skillbook.platform.dto.UserDto;
+import com.skillbook.platform.dto.InstructorDto;
 import com.skillbook.platform.service.CourseService;
 import com.skillbook.platform.enums.Role;
 import com.skillbook.platform.service.UserService;
@@ -58,12 +59,11 @@ public class CourseControllerTest {
 
     @BeforeEach
     void setUp() {
-        UserDto instructor = UserDto.builder()
+        InstructorDto instructor = InstructorDto.builder()
                 .id(1L)
                 .username("instructor1")
-                .email("instructor@test.com")
-                .password("password123")
-                .role(Role.INSTRUCTOR)
+                .firstName("Jane")
+                .lastName("Doe")
                 .build();
 
         testCourse1 = CourseDto.builder()
@@ -72,6 +72,7 @@ public class CourseControllerTest {
                 .description("Introduction to Java")
                 .category("Programming")
                 .instructorId(instructor.getId())
+                .instructor(instructor)
                 .startTime(LocalDateTime.now().plusDays(1))
                 .durationMinutes(90)
                 .build();
@@ -82,6 +83,7 @@ public class CourseControllerTest {
                 .description("Advanced Java Topics")
                 .category("Programming")
                 .instructorId(instructor.getId())
+                .instructor(instructor)
                 .startTime(LocalDateTime.now().plusDays(2))
                 .durationMinutes(120)
                 .build();
@@ -97,7 +99,11 @@ public class CourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].title").value("Java Basics"))
-                .andExpect(jsonPath("$[1].title").value("Advanced Java"));
+                .andExpect(jsonPath("$[1].title").value("Advanced Java"))
+                .andExpect(jsonPath("$[0].instructor.username").value("instructor1"))
+                .andExpect(jsonPath("$[0].instructor.firstName").value("Jane"))
+                .andExpect(jsonPath("$[1].instructor.username").value("instructor1"))
+                .andExpect(jsonPath("$[1].instructor.firstName").value("Jane"));
     }
 
     @Test
@@ -109,7 +115,11 @@ public class CourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].category").value("Programming"))
-                .andExpect(jsonPath("$[1].category").value("Programming"));
+                .andExpect(jsonPath("$[1].category").value("Programming"))
+                .andExpect(jsonPath("$[0].instructor.username").value("instructor1"))
+                .andExpect(jsonPath("$[0].instructor.firstName").value("Jane"))
+                .andExpect(jsonPath("$[1].instructor.username").value("instructor1"))
+                .andExpect(jsonPath("$[1].instructor.firstName").value("Jane"));
     }
 
     @Test
@@ -120,7 +130,9 @@ public class CourseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.title").value("Java Basics"));
+                .andExpect(jsonPath("$.title").value("Java Basics"))
+                .andExpect(jsonPath("$.instructor.username").value("instructor1"))
+                .andExpect(jsonPath("$.instructor.firstName").value("Jane"));
     }
 
     @Test
