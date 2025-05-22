@@ -1,5 +1,6 @@
 package com.skillbook.platform.service;
 
+import com.skillbook.platform.dto.InstructorDto;
 import com.skillbook.platform.dto.UserDto;
 import com.skillbook.platform.dto.CourseDto;
 import com.skillbook.platform.model.Course;
@@ -51,14 +52,22 @@ public class UserService {
                 .lastName(user.getLastName())
                 .role(user.getRole())
                 .enrolledCourses(
-                    user.getEnrolledCourses().stream()
-                        .map(course -> CourseDto.builder()
-                            .id(course.getId())
-                            .title(course.getTitle())
-                            .description(course.getDescription())
-                            .instructorId(course.getInstructor() != null ? course.getInstructor().getId() : null)
-                            .build())
-                        .collect(Collectors.toList())
+                        user.getEnrolledCourses().stream()
+                                .map(course -> CourseDto.builder()
+                                        .id(course.getId())
+                                        .title(course.getTitle())
+                                        .description(course.getDescription())
+                                        .instructor(
+                                                course.getInstructor() != null
+                                                        ? InstructorDto.builder()
+                                                        .id(course.getInstructor().getId())
+                                                        .firstName(course.getInstructor().getFirstName())
+                                                        .lastName(course.getInstructor().getLastName())
+                                                        .build()
+                                                        : null
+                                        )
+                                        .build())
+                                .collect(Collectors.toList())
                 )
                 .build();
     }
@@ -83,6 +92,7 @@ public class UserService {
         existing.setFirstName(dto.getFirstName());
         existing.setLastName(dto.getLastName());
         existing.setRole(dto.getRole());
+        existing.setProfilepic(dto.getProfilepic());
         Set<Course> enrolledCourses = dto.getEnrolledCourses().stream()
                 .map(courseDto -> courseRepository.findById(courseDto.getId())
                         .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + courseDto.getId())))
