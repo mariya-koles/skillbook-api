@@ -37,4 +37,8 @@ build/
 /src/main/resources/secrets.properties
 
 #ignore logs
-/logs
+# Ignore log files anywhere
+*.log*
+*.gz
+platform/logs/
+/logs/
