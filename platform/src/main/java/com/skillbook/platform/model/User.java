@@ -56,7 +56,7 @@ public class User {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "profilepic", columnDefinition = "bytea")
     @ToString.Exclude
-    private byte[] profilepic;
+    private byte[] profilePhoto;
 
     @ManyToMany
     @JoinTable(

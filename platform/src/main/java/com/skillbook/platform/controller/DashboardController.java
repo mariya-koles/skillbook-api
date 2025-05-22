@@ -63,7 +63,7 @@ public class DashboardController {
         user.setEmail(userDto.getEmail());
 
         if (photo != null && !photo.isEmpty()) {
-            user.setProfilepic(photo.getBytes());
+            user.setProfilePhoto(photo.getBytes());
         }
 
         userRepository.save(user);
