@@ -8,9 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.beans.factory.annotation.Autowired;
-import jakarta.validation.Valid;
 
-import java.io.IOException;
 import java.security.Principal;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -29,19 +27,16 @@ public class DashboardController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     /**
      * Updates the authenticated user's profile information.
-     *
      * Accepts multipart/form-data with a JSON part for user fields and a binary part for the profile picture.
      *
      * @param userDto JSON user details
      * @param photo optional profile photo file
      * @param principal the authenticated user's identity
      * @return ResponseEntity with update status
-     * @throws Exception 
+     * @throws Exception
      * @HTTP 200 OK if update is successful
      * @HTTP 400 Bad Request if validation fails
      */
@@ -52,7 +47,7 @@ public class DashboardController {
             Principal principal
     ) throws Exception {
         String username = principal.getName();
-        
+
         // Lookup the user by username
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("User not found"));
