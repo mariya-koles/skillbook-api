@@ -9,7 +9,9 @@ import com.skillbook.platform.repository.CourseRepository;
 import com.skillbook.platform.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import org.slf4j.Logger;
@@ -25,6 +27,9 @@ public class UserService {
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
     private final CourseRepository courseRepository;
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
+
 
     public UserDto findById(Long id) {
         User user = userRepository.findById(id)
@@ -51,6 +56,7 @@ public class UserService {
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .role(user.getRole())
+                .profilePhoto(user.getProfilePhoto())
                 .enrolledCourses(
                         user.getEnrolledCourses().stream()
                                 .map(course -> CourseDto.builder()
@@ -90,19 +96,18 @@ public class UserService {
 
         existing.setEmail(dto.getEmail());
         existing.setFirstName(dto.getFirstName());
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
         existing.setLastName(dto.getLastName());
         existing.setRole(dto.getRole());
-        existing.setProfilepic(dto.getProfilepic());
+        existing.setProfilePhoto(dto.getProfilePhoto());
         Set<Course> enrolledCourses = dto.getEnrolledCourses().stream()
                 .map(courseDto -> courseRepository.findById(courseDto.getId())
                         .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + courseDto.getId())))
                 .collect(Collectors.toSet());
 
         existing.setEnrolledCourses(enrolledCourses);
-
-        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
-            existing.setPassword(dto.getPassword()); // encode if needed
-        }
 
         userRepository.save(existing);
     }

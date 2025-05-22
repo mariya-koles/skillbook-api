@@ -35,7 +35,7 @@ public class UserDto {
     private String lastName;
 
     @Schema(description = "Profile picture binary data as byte array")
-    private byte[] profilepic;
+    private byte[] profilePhoto;
 
     private List<CourseDto> enrolledCourses;
 

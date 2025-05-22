@@ -11,6 +11,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -28,6 +29,10 @@ class UserServiceTest {
 
     @Mock
     private CourseRepository courseRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
 
     @BeforeEach
     void setUp() {
@@ -72,12 +77,13 @@ class UserServiceTest {
                 .firstName("Updated")
                 .lastName("User")
                 .email("updated@example.com")
+                .password("newpass")
                 .role(Role.LEARNER)
-                .profilepic("pic.jpg".getBytes())
+                .profilePhoto("pic.jpg".getBytes())
                 .enrolledCourses(List.of(courseDto))
                 .password("newpass")
                 .build();
-
+        when(passwordEncoder.encode("newpass")).thenReturn("encodedpass");
         when(userRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(courseRepository.findById(100L)).thenReturn(Optional.of(course));
 
@@ -94,7 +100,7 @@ class UserServiceTest {
                 .id(1L)
                 .enrolledCourses(List.of(CourseDto.builder().id(999L).build()))
                 .build();
-
+        when(passwordEncoder.encode(any())).thenReturn("doesntmatter");
         when(userRepository.findById(1L)).thenReturn(Optional.of(new User()));
         when(courseRepository.findById(999L)).thenReturn(Optional.empty());
 

@@ -32,7 +32,7 @@ public class UserRepositoryTest {
                 .firstName("Test")
                 .lastName("User")
                 .role(Role.LEARNER)
-                .profilepic(emptyPic)
+                .profilePhoto(emptyPic)
                 .build();
     }
 
@@ -53,7 +53,7 @@ public class UserRepositoryTest {
         assertThat(found.get().getFirstName()).isEqualTo(user.getFirstName());
         assertThat(found.get().getLastName()).isEqualTo(user.getLastName());
         assertThat(found.get().getRole()).isEqualTo(user.getRole());
-        assertThat(found.get().getProfilepic()).isNotNull();
+        assertThat(found.get().getProfilePhoto()).isNotNull();
     }
 
     @Test
@@ -81,6 +81,6 @@ public class UserRepositoryTest {
         assertThat(saved.getFirstName()).isEqualTo("Test");
         assertThat(saved.getLastName()).isEqualTo("User");
         assertThat(saved.getRole()).isEqualTo(Role.LEARNER);
-        assertThat(saved.getProfilepic()).isNotNull();
+        assertThat(saved.getProfilePhoto()).isNotNull();
     }
 } 
