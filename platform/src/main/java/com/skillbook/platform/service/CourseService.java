@@ -31,6 +31,7 @@ public class CourseService {
                         .id(course.getId())
                         .title(course.getTitle())
                         .description(course.getDescription())
+                        .longDescription(course.getLongDescription())
                         .category(course.getCategory())
                         .durationMinutes(course.getDurationMinutes())
                         .startTime(course.getStartTime())
@@ -42,6 +43,7 @@ public class CourseService {
                                     .username(course.getInstructor().getUsername())
                                     .firstName(course.getInstructor().getFirstName())
                                     .lastName(course.getInstructor().getLastName())
+                                    .email(course.getInstructor().getEmail())
                                     .build()
                                 : null
                         )
@@ -57,6 +59,7 @@ public class CourseService {
                 .id(course.getId())
                 .title(course.getTitle())
                 .description(course.getDescription())
+                .longDescription(course.getLongDescription())
                 .category(course.getCategory())
                 .durationMinutes(course.getDurationMinutes())
                 .startTime(course.getStartTime())
@@ -68,6 +71,7 @@ public class CourseService {
                             .username(course.getInstructor().getUsername())
                             .firstName(course.getInstructor().getFirstName())
                             .lastName(course.getInstructor().getLastName())
+                            .email(course.getInstructor().getEmail())
                             .build()
                         : null
                 )
@@ -81,6 +85,7 @@ public class CourseService {
         Course course = Course.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
+                .longDescription(dto.getLongDescription())
                 .category(dto.getCategory())
                 .startTime(dto.getStartTime())
                 .durationMinutes(dto.getDurationMinutes())
@@ -100,6 +105,7 @@ public class CourseService {
                         .id(course.getId())
                         .title(course.getTitle())
                         .description(course.getDescription())
+                        .longDescription(course.getLongDescription())
                         .category(course.getCategory())
                         .durationMinutes(course.getDurationMinutes())
                         .startTime(course.getStartTime())
@@ -111,6 +117,7 @@ public class CourseService {
                                     .username(course.getInstructor().getUsername())
                                     .firstName(course.getInstructor().getFirstName())
                                     .lastName(course.getInstructor().getLastName())
+                                    .email(course.getInstructor().getEmail())
                                     .build()
                                 : null
                         )
@@ -124,6 +131,7 @@ public class CourseService {
 
         existingCourse.setTitle(dto.getTitle());
         existingCourse.setDescription(dto.getDescription());
+        existingCourse.setLongDescription(dto.getLongDescription());
         existingCourse.setCategory(dto.getCategory());
         existingCourse.setDurationMinutes(dto.getDurationMinutes());
         existingCourse.setStartTime(dto.getStartTime());
