@@ -29,6 +29,8 @@ public class Course {
 
     private String description;
 
+    private String longDescription;
+
     private String category;
 
     @ManyToOne(fetch = FetchType.LAZY)
