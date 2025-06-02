@@ -33,8 +33,7 @@ build/
 .vscode/
 
 # ignore secrets
-/src/test/resources/secrets.properties
-/src/main/resources/secrets.properties
+.env
 
 #ignore scripts
 kill-8080.ps1
