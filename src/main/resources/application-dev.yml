@@ -1,0 +1,27 @@
+spring:
+  profiles:
+    active: dev
+  config:
+    import: optional:classpath:/secrets.properties
+  datasource:
+    url: jdbc:postgresql://localhost:5432/skillbook
+    username: postgres
+    password: postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Development configuration
+cors:
+  allowed-origins: http://localhost:3000
+
+jwt:
+  secret: ${JWT_KEY}
+  expirationMs: 1800000
+
+# Logging configuration for development
+logging:
+  level:
+    root: INFO
+    org.springframework.security: DEBUG
