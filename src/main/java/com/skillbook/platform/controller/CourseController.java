@@ -89,10 +89,10 @@ public class CourseController {
     @PreAuthorize("hasAnyRole('INSTRUCTOR', 'ADMIN')")
     public ResponseEntity<?> createCourse(@Valid @RequestBody CourseDto dto) {
         if (dto.getTitle() == null || dto.getTitle().trim().isEmpty() ||
-            dto.getDescription() == null || dto.getDescription().trim().isEmpty() ||
-            dto.getCategory() == null || dto.getCategory().trim().isEmpty() ||
-            dto.getStartTime() == null ||
-            dto.getDurationMinutes() <= 0) {
+                dto.getDescription() == null || dto.getDescription().trim().isEmpty() ||
+                dto.getCategory() == null || dto.getCategory().trim().isEmpty() ||
+                dto.getStartTime() == null ||
+                dto.getDurationMinutes() <= 0) {
             return ResponseEntity.badRequest().body("All fields are required and must be valid");
         }
 
@@ -120,17 +120,14 @@ public class CourseController {
         CourseDto course = courseService.getCourseById(courseId);
 
 
-    if (user.getEnrolledCourses() == null) {
-        user.setEnrolledCourses(new ArrayList<>());
-    }
+        if (user.getEnrolledCourses() == null) {
+            user.setEnrolledCourses(new ArrayList<>());
+        }
         user.getEnrolledCourses().add(course);
         userService.updateUser(user);  // persist the enrollment
 
         return ResponseEntity.ok("Enrolled successfully in course ID " + courseId);
     }
-
-
-
 
 
 }
