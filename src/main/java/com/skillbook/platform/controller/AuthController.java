@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+
     private final JwtUtil jwtUtil;
+
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
 
     /**
@@ -46,7 +48,8 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
         if (request.username == null || request.password == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username and password are required");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Username and password are required");
         }
 
         try {
@@ -76,6 +79,7 @@ public class AuthController {
          * The Username.
          */
         public String username;
+
         /**
          * The Password.
          */

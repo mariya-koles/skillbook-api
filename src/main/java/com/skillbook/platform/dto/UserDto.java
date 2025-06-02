@@ -13,19 +13,22 @@ import java.util.List;
 @Builder
 public class UserDto {
 
-    @Schema(example = "1", description = "User's unique ID", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(example = "1", description = "User's unique ID",
+            accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
     @Schema(example = "john_doe", description = "Unique username for login")
     private String username;
 
-    @Schema(example = "securePassword123", description = "User's password (plain text for input; hashed in DB)")
+    @Schema(example = "securePassword123", description = "User's password" +
+            " (plain text for input; hashed in DB)")
     private String password;
 
     @Schema(example = "john.doe@example.com", description = "Email address of the user")
     private String email;
 
-    @Schema(example = "INSTRUCTOR", description = "Role assigned to the user (e.g., ADMIN, INSTRUCTOR, LEARNER)")
+    @Schema(example = "INSTRUCTOR", description = "Role assigned to the user" +
+            " (e.g., ADMIN, INSTRUCTOR, LEARNER)")
     private Role role;
 
     @Schema(example = "John", description = "First name of the user")

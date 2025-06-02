@@ -29,7 +29,8 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserDto> updateCurrentUser(@RequestBody UserDto dto, Authentication authentication) {
+    public ResponseEntity<UserDto> updateCurrentUser(@RequestBody UserDto dto,
+                                                     Authentication authentication) {
         String username = authentication.getName();
         UserDto existing = userService.findByUsername(username);
 

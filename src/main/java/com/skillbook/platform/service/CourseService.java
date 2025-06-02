@@ -20,7 +20,9 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+
     private final UserRepository userRepository;
+
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
 
     public List<CourseDto> getAllCourses() {
@@ -53,7 +55,8 @@ public class CourseService {
 
     public CourseDto getCourseById(Long id) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Course not found"));
 
         return CourseDto.builder()
                 .id(course.getId())
@@ -98,7 +101,8 @@ public class CourseService {
     public List<CourseDto> getCoursesByCategory(String category) {
         List<Course> courses = courseRepository.findByCategory(category);
         if (courses.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No courses found in that category");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+                    "No courses found in that category");
         }
         return courses.stream()
                 .map(course -> CourseDto.builder()
@@ -127,7 +131,8 @@ public class CourseService {
 
     public void updateCourse(Long courseId, CourseDto dto) {
         Course existingCourse = courseRepository.findById(courseId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Course not found"));
 
         existingCourse.setTitle(dto.getTitle());
         existingCourse.setDescription(dto.getDescription());

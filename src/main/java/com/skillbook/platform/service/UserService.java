@@ -25,15 +25,19 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
+
     private final UserRepository userRepository;
+
     private final CourseRepository courseRepository;
+
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
 
     public UserDto findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                        "User not found"));
 
         return UserDto.builder()
                 .id(user.getId())
@@ -47,7 +51,8 @@ public class UserService {
 
     public UserDto findByUsername(String username) {
         User user =  userRepository.findByUsername(username)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                        "User not found"));
 
         return UserDto.builder()
                 .id(user.getId())
@@ -67,8 +72,10 @@ public class UserService {
                                                 course.getInstructor() != null
                                                         ? InstructorDto.builder()
                                                         .id(course.getInstructor().getId())
-                                                        .firstName(course.getInstructor().getFirstName())
-                                                        .lastName(course.getInstructor().getLastName())
+                                                        .firstName(course.getInstructor()
+                                                                .getFirstName())
+                                                        .lastName(course.getInstructor()
+                                                                .getLastName())
                                                         .build()
                                                         : null
                                         )
@@ -92,7 +99,8 @@ public class UserService {
 
     public void updateUser(UserDto dto) {
         User existing = userRepository.findById(dto.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, 
+                        "User not found"));
 
         existing.setEmail(dto.getEmail());
         existing.setFirstName(dto.getFirstName());
@@ -104,7 +112,8 @@ public class UserService {
         existing.setProfilePhoto(dto.getProfilePhoto());
         Set<Course> enrolledCourses = dto.getEnrolledCourses().stream()
                 .map(courseDto -> courseRepository.findById(courseDto.getId())
-                        .orElseThrow(() -> new EntityNotFoundException("Course not found with id: " + courseDto.getId())))
+                        .orElseThrow(() -> new EntityNotFoundException(
+                                "Course not found with id: " + courseDto.getId())))
                 .collect(Collectors.toSet());
 
         existing.setEnrolledCourses(enrolledCourses);

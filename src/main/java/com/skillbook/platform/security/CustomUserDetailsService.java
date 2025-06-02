@@ -15,6 +15,7 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
 
     public CustomUserDetailsService(UserRepository userRepository) {

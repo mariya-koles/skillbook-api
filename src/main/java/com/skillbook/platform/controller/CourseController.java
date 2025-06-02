@@ -29,7 +29,9 @@ public class CourseController {
 
 
     private static final Logger log = LoggerFactory.getLogger(CourseController.class);
+
     private final CourseService courseService;
+
     private final UserService userService;
 
     public CourseController(CourseService courseService, UserService userService) {
@@ -93,7 +95,8 @@ public class CourseController {
                 dto.getCategory() == null || dto.getCategory().trim().isEmpty() ||
                 dto.getStartTime() == null ||
                 dto.getDurationMinutes() <= 0) {
-            return ResponseEntity.badRequest().body("All fields are required and must be valid");
+            return ResponseEntity.badRequest()
+                    .body("All fields are required and must be valid");
         }
 
         try {
@@ -108,13 +111,16 @@ public class CourseController {
      * Enrolls the currently authenticated user in the specified course.
      *
      * @param courseId       the ID of the course to enroll in
-     * @param authentication the Spring Security authentication object containing the current user's identity
+     * @param authentication the Spring Security authentication object containing the current user's
+     *                       identity
      * @return ResponseEntity indicating success or failure of the enrollment
      */
     @PostMapping("/{courseId}/enroll")
     @PreAuthorize("hasRole('LEARNER')")
-    public ResponseEntity<?> enrollInCourse(@PathVariable Long courseId, Authentication authentication) {
-        String username = authentication.getName();  // gets the authenticated username
+    public ResponseEntity<?> enrollInCourse(@PathVariable Long courseId,
+                                          Authentication authentication) {
+        // gets the authenticated username
+        String username = authentication.getName();
 
         UserDto user = userService.findByUsername(username);
         CourseDto course = courseService.getCourseById(courseId);

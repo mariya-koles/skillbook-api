@@ -19,7 +19,8 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String jwtSecret;
 
-    private final long jwtExpirationMs = 30 * 60 * 1000; // 30 minutes
+    private final long jwtExpiration = 86400000; // 24 hours
+
     private Key signingKey;
 
     @PostConstruct
@@ -31,7 +32,7 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
     }

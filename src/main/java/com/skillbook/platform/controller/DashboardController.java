@@ -30,7 +30,8 @@ public class DashboardController {
 
     /**
      * Updates the authenticated user's profile information.
-     * Accepts multipart/form-data with a JSON part for user fields and a binary part for the profile picture.
+     * Accepts multipart/form-data with a JSON part for user fields and a binary part for the
+     * profile picture.
      *
      * @param userDto JSON user details
      * @param photo optional profile photo file
