@@ -40,5 +40,12 @@ jobs:
       - name: Run tests with coverage
         run: mvn clean verify
 
+      - name: Archive JaCoCo coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-report
+          path: target/site/jacoco
+
       - name: Run OWASP Dependency Check
         run: mvn dependency-check:check
