@@ -29,6 +29,7 @@ public class Course {
 
     private String description;
 
+    @Column(name = "long_description", columnDefinition = "TEXT")
     private String longDescription;
 
     private String category;

@@ -36,6 +36,9 @@ build/
 /src/test/resources/secrets.properties
 /src/main/resources/secrets.properties
 
+#ignore scripts
+kill-8080.ps1
+
 #ignore logs
 # Ignore log files anywhere
 *.log*
