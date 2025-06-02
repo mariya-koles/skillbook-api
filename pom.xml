@@ -6,12 +6,12 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.4.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath/>
 	</parent>
 	<groupId>com.skillbook</groupId>
-	<artifactId>platform</artifactId>
+	<artifactId>skillbook</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>skillbook-platform</name>
+	<name>skillbook</name>
 	<description>Project for fullstack Java session booking platform</description>
 	<url/>
 	<licenses>

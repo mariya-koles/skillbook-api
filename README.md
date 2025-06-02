@@ -4,7 +4,7 @@ A full-stack Java web app to share and book skill-based sessions. This repositor
 ## Tech Stack
 
 ### Backend
-- Java 17
+- Java 21
 - Spring Boot 3.4.5
 - Spring Security for authentication and authorization
 - Spring Data JPA for data persistence
@@ -29,15 +29,15 @@ A full-stack Java web app to share and book skill-based sessions. This repositor
 ## Getting Started
 
 ### Prerequisites
-- Java 17 or higher
+- Java 21 or higher
 - PostgreSQL 12 or higher
 - Maven 3.6 or higher
 
 ### Configuration
 1. Clone the repository
-2. Configure PostgreSQL database settings in `application.properties`
+2. Create a .env and configure secrets/credentials there
 3. Set the required environment variables:
-   - `PG_DB_PASSWORD`: PostgreSQL database password
+   - `DB_PASSWORD`: PostgreSQL database password
 
 ### Running the Application
 ```bash

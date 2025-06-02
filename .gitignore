@@ -42,5 +42,4 @@ kill-8080.ps1
 # Ignore log files anywhere
 *.log*
 *.gz
-platform/logs/
 /logs/
