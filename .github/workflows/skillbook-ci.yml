@@ -7,13 +7,13 @@ on:
     branches: [main]
 
 jobs:
-  build-and-push:
-    name: Build, Test, and Push to ECR
+  build-and-test:
+    name: Build, Test, and Analyze
     runs-on: ubuntu-latest
 
     env:
-      # Environment variables for Spring (if you switch to env vars)
-      API_KEY: ${{ secrets.API_KEY }}
+      JWT_KEY: ${{ secrets.JWT_KEY }}
+      DB_USERNAME: ${{ secrets.DB_USERNAME }}
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
     steps:
@@ -26,34 +26,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Maven cache
+      - name: Cache Maven dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-maven
+          restore-keys: |
+            ${{ runner.os }}-maven
 
-      - name: Inject secrets.properties (if not using env vars)
-        run: |
-          echo "api.key=${{ secrets.API_KEY }}" >> src/main/resources/secrets.properties
-          echo "db.password=${{ secrets.DB_PASSWORD }}" >> src/main/resources/secrets.properties
-
-      - name: Lint Java Code (optional)
+      - name: Lint Java code (Checkstyle)
         run: mvn checkstyle:check
 
-      - name: Run Tests with Coverage
+      - name: Run tests with coverage
         run: mvn clean verify
 
-      - name: Run OWASP Dependency Check (security scan)
-        run: mvn org.owasp:dependency-check-maven:check
-
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
-
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ secrets.ECR_REGISTRY }}/skillbook-api:latest .
-
-      - name: Push Docker image to ECR
-        run: |
-          docker push ${{ secrets.ECR_REGISTRY }}/skillbook-api:latest
+      - name: Run OWASP Dependency Check
+        run: mvn org.owasp:dependency-check-
